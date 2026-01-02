@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 export default function StockSearch() {
     const [query, setQuery] = useState("");
-    const [results, setResults] = useState([]);
+    const [results, setResults] = useState<Array<{ ticker: string; name: string }>>([]);
 
     useEffect(() => {
         // if (query.length < 2) {
@@ -23,20 +23,25 @@ export default function StockSearch() {
     }, [query]);
 
     return (
-        <div className="relative w-80">
-            <Input
-                placeholder="Search stock"
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-            />
-            {/* <p>{results}</p> */}
 
-            {/* {results.length > 0 && (
+        <div className="relative w-80">
+            <h1 className="relative bottom-10 text-center text-lg">
+                Enter stock name</h1>
+            <div className="w-full">
+                <Input
+                    placeholder="Search for a stock"
+                    variant="bordered"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                />
+            </div>
+
+            {results.length > 0 && (
                 <div className="absolute top-full mt-1 w-full rounded border bg-white shadow">
                     {results.map((r) => (
                         <div
                             key={r.ticker}
-                            className="cursor-pointer px-3 py-2 hover:bg-gray-100"
+                            className="cursor-pointer px-3 py-2 text-black hover:bg-gray-100"
                             onClick={() => {
                                 setQuery(`${r.ticker} — ${r.name}`);
                                 setResults([]);
@@ -46,7 +51,7 @@ export default function StockSearch() {
                         </div>
                     ))}
                 </div>
-            )} */}
+            )}
         </div>
     );
 }
