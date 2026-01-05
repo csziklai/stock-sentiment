@@ -6,6 +6,10 @@ from fastapi.middleware.cors import CORSMiddleware
 # import yahoo_fin.stock_info as si
 # dow_list = si.tickers_nasdaq(True)
 import yfinance as yf
+###
+# cd backend
+# fastapi dev main.py
+###
 
 app = FastAPI()
 
