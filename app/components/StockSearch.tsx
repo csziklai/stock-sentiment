@@ -3,10 +3,12 @@
 //import { Input } from "@heroui/react";
 import ArrowCircleRightOutlinedIcon from '@mui/icons-material/ArrowCircleRightOutlined';
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 //import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function StockSearch() {
     //const location = useLocation();
+    const router = useRouter();
     const [query, setQuery] = useState("");
     const [results, setResults] = useState<Array<{ ticker: string; name: string }>>([]);
     const [selected, setSelected] = useState(false);
@@ -34,11 +36,8 @@ export default function StockSearch() {
         e.preventDefault();
         if (!selectedStock) return;
 
-        await fetch("http://127.0.0.1:8000/stock-sentiment", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(selectedStock),
-        });
+        router.push(`/display-sentiment?symbol=${selectedStock.ticker}`);
+        //router.push("/display-sentiment");
     };
 
     return (

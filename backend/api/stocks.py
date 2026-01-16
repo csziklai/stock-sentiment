@@ -32,4 +32,4 @@ def search_stocks(q: Optional[str]):
 
 @router.post("/stock-sentiment")
 def stock_sentiment(stock : StockRequest):
-    return analyze_sentiment(stock)
+    return analyze_sentiment(stock.ticker)

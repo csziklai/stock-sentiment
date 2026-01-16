@@ -10,6 +10,7 @@ import finnhub
 from datetime import date
 #import requests
 from newspaper import Article
+import torch
 
 pipe = pipeline(task="sentiment-analysis", model="ProsusAI/finbert") #ignore error
 
@@ -35,7 +36,7 @@ def get_articles(ticker : str):
 
     return text_results
 
-def analyze_sentiment(stock):
+def analyze_sentiment(stock : str):
     sentiments = []
 
     article_texts = get_articles(stock)
@@ -47,12 +48,18 @@ def analyze_sentiment(stock):
     print(sentiments)
 
     # compute whether it's overall positive or negative
-    sum = 0
+    # TODO come up with a better algorithm
+    pos_score = 0
+    neg_score = 0
+    neut_score = 0
     for s in sentiments:
-        sum += s["score"]
+        if s['label'] == 'POSITIVE':
+            pos_score += s['score'] # could there by python floating error?
+        elif s['label'] == 'NEGATIVE':
+            neg_score += s['score']
+        else:
+            neut_score += s['score']
 
-    avg = sum / len(sentiments)
-    return sentiments
+    # just to see what it outputs
+    return {'pos' : pos_score, 'neg' : neg_score, 'neut' : neut_score, 'sentiments' : sentiments}
 
-def process_sentiments(sentiments):
-    pass
