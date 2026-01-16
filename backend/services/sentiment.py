@@ -28,8 +28,12 @@ def get_articles(ticker : str):
         if a["source"] in ["Bloomberg", "WSJ", "Financial Times"]:
             continue
         article = Article(a["url"]) 
-        article.download()
-        article.parse()
+        try:
+            article.download()
+            article.parse()
+        except: 
+            # skip past this article if we cannot open it
+            continue
 
         text = (article.text)[:2000] # truncate to 2000 chars for finbert
         text_results.append(text)
@@ -46,20 +50,28 @@ def analyze_sentiment(stock : str):
         sentiments.append(res)
 
     print(sentiments)
-
-    # compute whether it's overall positive or negative
-    # TODO come up with a better algorithm
+    threshold = 0.3 # if score is better than this, considered positive
+    
     pos_score = 0
     neg_score = 0
     neut_score = 0
     for s in sentiments:
-        if s['label'] == 'POSITIVE':
-            pos_score += s['score'] # could there by python floating error?
-        elif s['label'] == 'NEGATIVE':
-            neg_score += s['score']
+        print(s)
+        item = s[0] #annoying that it's a nested list [ [item], [item],... [item] ], where item is a dict
+        if item['label'] == 'POSITIVE':
+            pos_score += item['score']
+        elif item['label'] == 'NEGATIVE':
+            neg_score += item['score']
         else:
-            neut_score += s['score']
+            neut_score += item['score']
 
-    # just to see what it outputs
-    return {'pos' : pos_score, 'neg' : neg_score, 'neut' : neut_score, 'sentiments' : sentiments}
+    score = (pos_score - neg_score) / len(sentiments)
+    if score > threshold:
+        res = "positive"
+    elif score < 0:
+        res = "negative"
+    else:
+        res = "neutral"
+
+    return (res, score)
 

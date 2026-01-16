@@ -21,11 +21,13 @@ export default function DisplaySentiment() {
                 const res = await fetch("http://127.0.0.1:8000/stock-sentiment", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(ticker),
+                    body: JSON.stringify({ ticker: ticker }),
                 });
+                console.log("tried");
+                console.log(res);
 
                 if (!res.ok) throw new Error("Request failed");
-
+                console.log("res was ok?")
                 const result = await res.json();
                 setData(result);
             } catch (err) {
