@@ -22,13 +22,16 @@ def search_stocks(q: Optional[str]):
     if not q:
         return {"detail": "no query param"}
     data = yf.Search(q).quotes
-    return [
-        {
+    print(data)
+    res = []
+    for r in data[:5]:
+        if r["typeDisp"] != "Equity":
+            continue
+        res.append({
             "ticker": r["symbol"],
-            "name": r["shortname"]
-        }
-        for r in data[:5] # return the first 5 results
-    ]
+            "name": r.get("shortname") or r.get("longname")
+        })
+    return res
 
 @router.post("/stock-sentiment")
 def stock_sentiment(stock : StockRequest):

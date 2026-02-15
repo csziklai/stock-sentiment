@@ -7,7 +7,7 @@
 import os
 from transformers import pipeline
 import finnhub
-from datetime import date
+from datetime import date, timedelta
 #import requests
 from newspaper import Article
 import torch
@@ -17,22 +17,27 @@ pipe = pipeline(task="sentiment-analysis", model="ProsusAI/finbert") #ignore err
 def get_articles(ticker : str):
     finnhub_client = finnhub.Client(api_key=os.getenv("API_KEY"))
     today = date.today()
+    week_ago = today - timedelta(days=7)
     today_str = today.strftime("%Y-%m-%d")
+    week_ago_str = week_ago.strftime("%Y-%m-%d")
     text_results = []
 
     results = finnhub_client.company_news(ticker, _from=today_str, to=today_str)
     # play around with timeframe - will there be enough news for 24h? or make it
     # a week if it's a lesser known company?
+    if len(results) < 5:
+        results = finnhub_client.company_news(ticker, _from=week_ago_str, to=today_str)
+        print("finnhub found " + str(len(results)) + "articles")
     for a in results[:5]: #limit to the first 5 results for now
-        # might not be able to visit all articles (paywalls, etc.)
         if a["source"] in ["Bloomberg", "WSJ", "Financial Times"]:
-            continue
+            continue # skip these because of paywalls
         article = Article(a["url"]) 
         try:
             article.download()
             article.parse()
         except: 
             # skip past this article if we cannot open it
+            print("could not open article")
             continue
 
         text = (article.text)[:2000] # truncate to 2000 chars for finbert
@@ -44,6 +49,7 @@ def analyze_sentiment(stock : str):
     sentiments = []
 
     article_texts = get_articles(stock)
+    print("how many articles were retrieved: " + str(len(article_texts)))
     # brute force version, might need to do some sort of batching
     for a in article_texts:
         res = pipe(a)
@@ -57,10 +63,10 @@ def analyze_sentiment(stock : str):
     neut_score = 0
     for s in sentiments:
         print(s)
-        item = s[0] #annoying that it's a nested list [ [item], [item],... [item] ], where item is a dict
-        if item['label'] == 'POSITIVE':
+        item = s[0] #it's a nested list [ [item], [item],... [item] ], where item is a dict
+        if item['label'] == 'positive':
             pos_score += item['score']
-        elif item['label'] == 'NEGATIVE':
+        elif item['label'] == 'negative':
             neg_score += item['score']
         else:
             neut_score += item['score']
