@@ -10,11 +10,13 @@ import finnhub
 from datetime import date, timedelta
 #import requests
 from newspaper import Article
-import torch
+#import torch
+from dotenv import load_dotenv
 
 pipe = pipeline(task="sentiment-analysis", model="ProsusAI/finbert") #ignore error
 
 def get_articles(ticker : str):
+    load_dotenv()
     finnhub_client = finnhub.Client(api_key=os.getenv("API_KEY"))
     today = date.today()
     week_ago = today - timedelta(days=7)
@@ -27,8 +29,8 @@ def get_articles(ticker : str):
     # a week if it's a lesser known company?
     if len(results) < 5:
         results = finnhub_client.company_news(ticker, _from=week_ago_str, to=today_str)
-        print("finnhub found " + str(len(results)) + "articles")
-    for a in results[:5]: #limit to the first 5 results for now
+        print("finnhub found " + str(len(results)) + " articles")
+    for a in results[:7]: #limit to the first 5 results for now
         if a["source"] in ["Bloomberg", "WSJ", "Financial Times"]:
             continue # skip these because of paywalls
         article = Article(a["url"]) 
@@ -40,7 +42,7 @@ def get_articles(ticker : str):
             print("could not open article")
             continue
 
-        text = (article.text)[:2000] # truncate to 2000 chars for finbert
+        text = (article.text)[:1000] # truncate to 2000 chars for finbert
         text_results.append(text)
 
     return text_results

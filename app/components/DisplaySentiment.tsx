@@ -40,7 +40,15 @@ export default function DisplaySentiment() {
 
     }, [ticker]);
 
-    if (loading) return <div>Analyzing sentiment...</div>;
+    if (loading) return (
+        <div className="flex h-screen items-center justify-center">
+            <p text-xl>Analyzing sentiment </p>
+            <span className="inline-flex gap-1">
+                <span className="animate-pulse [animation-delay:0ms]">.</span>
+                <span className="animate-pulse [animation-delay:200ms]">.</span>
+                <span className="animate-pulse [animation-delay:400ms]">.</span>
+            </span>
+        </div>);
     if (error) return <div>{error}</div>;
 
     return (
