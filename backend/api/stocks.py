@@ -25,7 +25,7 @@ def search_stocks(q: Optional[str]):
     print(data)
     res = []
     for r in data[:5]:
-        if r["typeDisp"] != "Equity":
+        if r["typeDisp"] != "equity":
             continue
         res.append({
             "ticker": r["symbol"],

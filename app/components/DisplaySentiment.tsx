@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
 export default function DisplaySentiment() {
-    type SentimentResult = unknown;
+    type SentimentResult = Array<unknown>;
     const params = useSearchParams();
     const ticker = params.get("symbol"); // how does this work?
 
@@ -52,9 +52,24 @@ export default function DisplaySentiment() {
     if (error) return <div>{error}</div>;
 
     return (
-        <div>
-            <h1>{ticker} Sentiment</h1>
-            <pre>{JSON.stringify(data, null, 2)}</pre>
+        <div className="relative top-30">
+            <h1 className="text-center text-4xl p-8">{ticker}</h1>
+            <div className="grid grid-cols-2 gap-x-24 max-w-2xl mx-auto text-left justify-items-center">
+
+                <div className="space-y-2">
+                    <p className="font-bold text-xl">Sentiment</p>
+                    <p className="">{data[0]}</p>
+                </div>
+
+                <div className="space-y-2">
+                    <p className="font-bold text-xl">Score</p>
+                    <p className="">{data[1]}</p>
+                </div>
+
+            </div>
+
+
+            {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
         </div>
     );
 
