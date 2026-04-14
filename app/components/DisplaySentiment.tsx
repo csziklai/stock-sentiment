@@ -42,31 +42,32 @@ export default function DisplaySentiment() {
 
     if (loading) return (
         <div className="flex h-screen items-center justify-center">
-            <p text-xl>Analyzing sentiment </p>
+            <p className="text-xl">Analyzing sentiment </p>
             <span className="inline-flex gap-1">
-                <span className="animate-pulse [animation-delay:0ms]">.</span>
-                <span className="animate-pulse [animation-delay:200ms]">.</span>
-                <span className="animate-pulse [animation-delay:400ms]">.</span>
+                <span className="text-xl animate-pulse [animation-delay:0ms]">.</span>
+                <span className="text-xl animate-pulse [animation-delay:200ms]">.</span>
+                <span className="text-xl animate-pulse [animation-delay:400ms]">.</span>
             </span>
         </div>);
     if (error) return <div>{error}</div>;
 
     return (
         <div className="relative top-30">
-            <h1 className="text-center text-4xl p-8">{ticker}</h1>
+            <h1 className="text-center text-4xl p-8 pb-14">{ticker}</h1>
             <div className="grid grid-cols-2 gap-x-24 max-w-2xl mx-auto text-left justify-items-center">
 
                 <div className="space-y-2">
                     <p className="font-bold text-xl">Sentiment</p>
-                    <p className="">{data[0]}</p>
+                    <p className="">{data["sentiment"]}</p>
                 </div>
 
                 <div className="space-y-2">
                     <p className="font-bold text-xl">Score</p>
-                    <p className="">{data[1]}</p>
+                    <p className="">{data["score"]}</p>
                 </div>
 
             </div>
+            <p className="font-bold text-xl">Top articles</p>
 
 
             {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}

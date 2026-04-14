@@ -25,11 +25,9 @@ export default function StockSearch() {
         if (!query) return;
 
         const timeout = setTimeout(async () => {
-            console.log("query being sent: ", query);
             const res = await fetch(`http://127.0.0.1:8000/search?q=${query}`);
             const data = await res.json();
             setResults(data);
-            console.log("search response: ", data);
         }, 300); // debounce
 
         return () => clearTimeout(timeout);

@@ -12,6 +12,7 @@ from datetime import date, timedelta
 from newspaper import Article
 #import torch
 from dotenv import load_dotenv
+from models.article import ArticleInfo
 
 pipe = pipeline(task="sentiment-analysis", model="ProsusAI/finbert") #ignore error
 
@@ -22,7 +23,9 @@ def get_articles(ticker : str):
     week_ago = today - timedelta(days=7)
     today_str = today.strftime("%Y-%m-%d")
     week_ago_str = week_ago.strftime("%Y-%m-%d")
-    text_results = []
+    # text_results = []
+    # links = []
+    articles = []
 
     results = finnhub_client.company_news(ticker, _from=today_str, to=today_str)
     # play around with timeframe - will there be enough news for 24h? or make it
@@ -30,7 +33,7 @@ def get_articles(ticker : str):
     if len(results) < 5:
         results = finnhub_client.company_news(ticker, _from=week_ago_str, to=today_str)
         print("finnhub found " + str(len(results)) + " articles")
-    for a in results[:7]: #limit to the first 5 results for now
+    for a in results[:7]: #limit to the first 7 results for now
         if a["source"] in ["Bloomberg", "WSJ", "Financial Times"]:
             continue # skip these because of paywalls
         article = Article(a["url"]) 
@@ -43,21 +46,38 @@ def get_articles(ticker : str):
             continue
 
         text = (article.text)[:1000] # truncate to 2000 chars for finbert
-        text_results.append(text)
+        # text_results.append(text)
+        # links.append(article)
+        art_obj = ArticleInfo(
+            title=article.title,
+            url= article.url,
+            text = text,
+            sentiment = "unset"
+        )
+        articles.append(art_obj)
 
-    return text_results
+    return articles
 
 def analyze_sentiment(stock : str):
     sentiments = []
 
-    article_texts = get_articles(stock)
-    print("how many articles were retrieved: " + str(len(article_texts)))
-    # brute force version, might need to do some sort of batching
-    for a in article_texts:
-        res = pipe(a)
-        sentiments.append(res)
+    articles = get_articles(stock)
 
-    print(sentiments)
+    # dict = [ {
+    #     "title": a.title,
+    #     "url": a.url,
+    #     "sentiment" : 
+    # }
+    # for a in article_objs ]
+    print("how many articles were retrieved: " + str(len(articles)))
+    # brute force version, might need to do some sort of batching
+    for a in articles:
+        res = pipe(a.text)
+        #print("res: " + res)
+        sentiments.append(res)
+        a.sentiment = res[0]['label']
+
+    #print(sentiments)
     threshold = 0.3 # if score is better than this, considered positive
     
     pos_score = 0
@@ -81,5 +101,5 @@ def analyze_sentiment(stock : str):
     else:
         res = "neutral"
 
-    return (res, score)
+    return (res, score, articles)
 
