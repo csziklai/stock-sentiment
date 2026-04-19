@@ -3,6 +3,8 @@
 //import { Input } from "@heroui/react";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import CircleIcon from '@mui/icons-material/Circle';
+import { useRouter } from "next/navigation";
 
 export default function DisplaySentiment() {
     type SentimentResult = Array<unknown>;
@@ -12,6 +14,14 @@ export default function DisplaySentiment() {
     const [data, setData] = useState<SentimentResult | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+
+    function BackButton() {
+        const router = useRouter();
+
+        return (
+            <div className="absolute top-80 cursor-pointer" onClick={() => router.back()}>back</div>
+        );
+    }
 
     useEffect(() => {
         if (!ticker) return;
@@ -66,8 +76,32 @@ export default function DisplaySentiment() {
                     <p className="">{data["score"]}</p>
                 </div>
 
+                <div className="col-span-2 mt-6 relative top-10">
+                    <p className="font-bold text-xl">Top articles</p>
+                    {/* <a href={(data["articles"][0]).url}>{(data["articles"][0]).title}</a> */}
+                    <div>
+                        {data["articles"]?.map((article, i) => (
+                            <div key={i}>
+                                <a href={article.url} target="_blank" className="">
+                                    {article.title} <CircleIcon sx={{ fontSize: 12 }}
+                                        className={`w-40 h-40 ${article.sentiment === "positive"
+                                            ? "text-green-500"
+                                            : article.sentiment === "neutral"
+                                                ? "text-yellow-500"
+                                                : "text-red-500"
+                                            }`}
+                                    />
+                                </a>
+                            </div>
+                        ))}
+                    </div>
+
+                    <BackButton />
+
+                </div>
+
             </div>
-            <p className="font-bold text-xl">Top articles</p>
+
 
 
             {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}

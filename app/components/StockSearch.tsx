@@ -79,9 +79,6 @@ export default function StockSearch() {
                     color="success"
                     className="absolute top-26/50 left-83 cursor-pointer"
                     onClick={handleNext}
-                // className="relative left-3"
-
-
                 />)}
         </div>
     );
