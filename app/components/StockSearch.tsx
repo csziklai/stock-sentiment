@@ -1,13 +1,9 @@
 "use client";
-
-//import { Input } from "@heroui/react";
 import ArrowCircleRightOutlinedIcon from '@mui/icons-material/ArrowCircleRightOutlined';
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-//import { useLocation, useNavigate } from 'react-router-dom';
 
 export default function StockSearch() {
-    //const location = useLocation();
     const router = useRouter();
     const [query, setQuery] = useState("");
     const [results, setResults] = useState<Array<{ ticker: string; name: string }>>([]);
@@ -18,10 +14,6 @@ export default function StockSearch() {
     } | null>(null);
 
     useEffect(() => {
-        // if (query.length < 2) {
-        //     setResults([]);
-        //     return;
-        // }
         if (!query) return;
 
         const timeout = setTimeout(async () => {
@@ -38,11 +30,9 @@ export default function StockSearch() {
         if (!selectedStock) return;
 
         router.push(`/display-sentiment?symbol=${selectedStock.ticker}`);
-        //router.push("/display-sentiment");
     };
 
     return (
-
         <div className="relative w-80">
             <h1 className="relative bottom-10 text-center text-lg">
                 Enter stock name</h1>
@@ -53,7 +43,6 @@ export default function StockSearch() {
                 onChange={(e) => setQuery(e.target.value)}
                 className="w-full h-10 rounded-md border border-gray-300 px-3 focus:outline-none focus:ring-2 focus:ring-black"
             />
-
 
             {results.length > 0 && (
                 <div className="absolute top-full mt-1 w-full rounded border bg-white shadow">
@@ -66,7 +55,6 @@ export default function StockSearch() {
                                 setResults([]);
                                 setSelected(true);
                                 setSelectedStock({ ticker: r.ticker, name: r.name });
-
                             }}
                         >
                             <strong>{r.ticker}</strong> — {r.name}

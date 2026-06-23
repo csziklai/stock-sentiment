@@ -1,20 +1,12 @@
-# Load model directly
-# from transformers import AutoTokenizer, AutoModelForSequenceClassification
-
-# tokenizer = AutoTokenizer.from_pretrained("ProsusAI/finbert")
-# model = AutoModelForSequenceClassification.from_pretrained("ProsusAI/finbert")
-# Use a pipeline as a high-level helper
 import os
 from transformers import pipeline
 import finnhub
 from datetime import date, timedelta
-#import requests
 from newspaper import Article
-#import torch
 from dotenv import load_dotenv
 from models.article import ArticleInfo
 
-pipe = pipeline(task="sentiment-analysis", model="ProsusAI/finbert") #ignore error
+pipe = pipeline(task="sentiment-analysis", model="ProsusAI/finbert")
 
 def get_articles(ticker : str):
     load_dotenv()
@@ -23,13 +15,10 @@ def get_articles(ticker : str):
     week_ago = today - timedelta(days=7)
     today_str = today.strftime("%Y-%m-%d")
     week_ago_str = week_ago.strftime("%Y-%m-%d")
-    # text_results = []
-    # links = []
     articles = []
 
     results = finnhub_client.company_news(ticker, _from=today_str, to=today_str)
-    # play around with timeframe - will there be enough news for 24h? or make it
-    # a week if it's a lesser known company?
+
     if len(results) < 5:
         results = finnhub_client.company_news(ticker, _from=week_ago_str, to=today_str)
         print("finnhub found " + str(len(results)) + " articles")
@@ -45,9 +34,7 @@ def get_articles(ticker : str):
             print("could not open article")
             continue
 
-        text = (article.text)[:1000] # truncate to 2000 chars for finbert
-        # text_results.append(text)
-        # links.append(article)
+        text = (article.text)[:1000] # truncate to 1000 chars for finbert
         art_obj = ArticleInfo(
             title=article.title,
             url= article.url,
@@ -63,14 +50,7 @@ def analyze_sentiment(stock : str):
 
     articles = get_articles(stock)
 
-    # dict = [ {
-    #     "title": a.title,
-    #     "url": a.url,
-    #     "sentiment" : 
-    # }
-    # for a in article_objs ]
     print("how many articles were retrieved: " + str(len(articles)))
-    # brute force version, might need to do some sort of batching
     for a in articles:
         res = pipe(a.text)
         #print("res: " + res)

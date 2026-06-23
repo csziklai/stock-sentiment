@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 export default function DisplaySentiment() {
     type SentimentResult = Array<unknown>;
     const params = useSearchParams();
-    const ticker = params.get("symbol"); // how does this work?
+    const ticker = params.get("symbol");
 
     const [data, setData] = useState<SentimentResult | null>(null);
     const [loading, setLoading] = useState(true);
@@ -78,7 +78,6 @@ export default function DisplaySentiment() {
 
                 <div className="col-span-2 mt-6 relative top-10">
                     <p className="font-bold text-xl">Top articles</p>
-                    {/* <a href={(data["articles"][0]).url}>{(data["articles"][0]).title}</a> */}
                     <div>
                         {data["articles"]?.map((article, i) => (
                             <div key={i}>
@@ -95,16 +94,9 @@ export default function DisplaySentiment() {
                             </div>
                         ))}
                     </div>
-
                     <BackButton />
-
                 </div>
-
             </div>
-
-
-
-            {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
         </div>
     );
 

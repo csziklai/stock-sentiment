@@ -1,8 +1,14 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## About
+Stock Sentiment Analyzer is a full-stack web application that analyzes financial news articles and generates sentiment scores for publicly traded companies using FinBERT
+(https://huggingface.co/ProsusAI/finbert). Users can search for stocks, retrieve recent news, and view aggregated sentiment insights to gauge market sentiment. This project performs sentiment analysis for a given stock, Users can search for stocks, see a real-time score that represents
+how positive or negative the current sentiment is, and see the top news articles that 
+contributed to this score.
+
+## Video Demo
 
 ## Getting Started
 
-First, run the development server:
+First, run the development server for the frontend:
 
 ```bash
 npm run dev
@@ -14,23 +20,41 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Then in another shell, start the backend:
+```bash
+cd backend
+fastapi dev main.py
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the 
+project.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Features
 
-## Learn More
+- Search publicly traded companies by ticker symbol
+- Retrieve recent financial news articles and analyze their sentiment using FinBERT
+- Aggregate sentiment scores across multiple articles using a weighted average formula
+- Display bullish, bearish, and neutral sentiment indicators
+- Display links to selected articles that contributed to the score
+- Responsive frontend built with Next.js
 
-To learn more about Next.js, take a look at the following resources:
+## Tech Stack
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Frontend
+- Next.js
+- React
+- Tailwind CSS
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Backend
+- FastAPI
+- Python
 
-## Deploy on Vercel
+Machine Learning
+- FinBERT (Hugging Face Transformers)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Data Sources
+- [Finnhub Company News API](https://finnhub.io/docs/api/company-news)
+- Yahoo Finance Search [yfinance](https://ranaroussi.github.io/yfinance/reference/api/yfinance.Lookup.html#yfinance.Lookup)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+
