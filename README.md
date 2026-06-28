@@ -6,6 +6,10 @@ contributed to this score.
 
 ## Video Demo
 
+
+https://github.com/user-attachments/assets/9ff9924c-4c5b-4860-916d-82d9509eb103
+
+
 ## Getting Started
 
 First, run the development server for the frontend:
